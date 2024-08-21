@@ -6,12 +6,17 @@ import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/form'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
+import { useState } from 'react'
 
 interface RegisterFormProps {
   onSignIn: () => void
 }
 
 export default function RegisterForm({ onSignIn }: RegisterFormProps) {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   const phoneRegex = /^0?[1-9]\d{1,14}$/
 
@@ -53,14 +58,53 @@ export default function RegisterForm({ onSignIn }: RegisterFormProps) {
     },
   })
 
+  async function handleRegister(data: z.infer<typeof formSchema>) {
+    setLoading(true)
+    const temp = {
+      name: data.name,
+      username: data.username,
+      password: data.password,
+    }
+    try {
+      const resp = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(temp),
+      })
+
+      if (resp.ok) {
+        const data = await resp.json()
+        setSuccess(data.message)
+        setTimeout(() => {
+          onSignIn()
+        }, 800)
+      } else {
+        const data = await resp.json()
+        setError(data.message)
+      }
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(v => {
-          console.log(v)
-        })}
-      >
+      <form onSubmit={form.handleSubmit(handleRegister)}>
         <h1 className='mb-7 text-[32px] font-bold'>Sign Up</h1>
+        {error && (
+          <div className='mb-4 rounded-[4px] bg-orange p-5 text-sm text-black'>
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className='mb-4 rounded-[4px] bg-green-600 p-5 text-sm text-white'>
+            {success}
+          </div>
+        )}
         <div className='space-y-4'>
           <FormField
             control={form.control}
@@ -115,7 +159,7 @@ export default function RegisterForm({ onSignIn }: RegisterFormProps) {
             )}
           />
         </div>
-        <Button type='submit' className='mt-8 w-full'>
+        <Button type='submit' className='mt-8 w-full' isLoading={loading}>
           Sign Up
         </Button>
         <p className='mt-2 text-[14px] text-gray'>
