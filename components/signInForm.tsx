@@ -20,7 +20,7 @@ export default function SignInForm({ onRegister }: SignInFormProps) {
   const router = useRouter()
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  const phoneRegex = /^0?[1-9]\d{1,14}$/
+  const phoneRegex = /^(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/
 
   const formSchema = z.object({
     username: z.string().refine(
@@ -73,7 +73,7 @@ export default function SignInForm({ onRegister }: SignInFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleLogin)}>
+      <form className='min-w-[230px]' onSubmit={form.handleSubmit(handleLogin)}>
         <h1 className='mb-7 text-[32px] font-bold'>Sign In</h1>
         {error && (
           <div className='mb-4 rounded-[4px] bg-orange p-5 text-sm text-black'>

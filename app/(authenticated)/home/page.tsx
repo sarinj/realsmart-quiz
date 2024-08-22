@@ -9,8 +9,8 @@ export default async function HomePage() {
   }
 
   return (
-    <div>
-      <p className='text-xl'>{session.user?.name}</p>
+    <div className='px-[20%] py-6'>
+      <p className='text-xl'>Name: {session?.user?.name}</p>
     </div>
   )
 }

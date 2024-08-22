@@ -18,7 +18,7 @@ export default function RegisterForm({ onSignIn }: RegisterFormProps) {
   const [success, setSuccess] = useState('')
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  const phoneRegex = /^0?[1-9]\d{1,14}$/
+  const phoneRegex = /^(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/
 
   const formSchema = z
     .object({
@@ -74,14 +74,14 @@ export default function RegisterForm({ onSignIn }: RegisterFormProps) {
         body: JSON.stringify(temp),
       })
 
+      const data = await resp.json()
+
       if (resp.ok) {
-        const data = await resp.json()
         setSuccess(data.message)
         setTimeout(() => {
           onSignIn()
         }, 800)
       } else {
-        const data = await resp.json()
         setError(data.message)
       }
     } catch (e) {
@@ -93,7 +93,10 @@ export default function RegisterForm({ onSignIn }: RegisterFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleRegister)}>
+      <form
+        className='min-w-[230px]'
+        onSubmit={form.handleSubmit(handleRegister)}
+      >
         <h1 className='mb-7 text-[32px] font-bold'>Sign Up</h1>
         {error && (
           <div className='mb-4 rounded-[4px] bg-orange p-5 text-sm text-black'>
