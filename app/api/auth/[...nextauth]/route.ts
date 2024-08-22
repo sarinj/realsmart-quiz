@@ -1,8 +1,8 @@
 import User from '@/models/user'
 import NextAuth, { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import Crypto from 'crypto-js'
 import connectMongoDB from '@/lib/mongodb'
+import { checkMatchPassword } from '@/lib/utils'
 
 const authOptions: AuthOptions = {
   providers: [
@@ -20,17 +20,17 @@ const authOptions: AuthOptions = {
             return null
           }
 
-          const passwordMatch =
-            Crypto.AES.decrypt(
-              user.password,
-              process.env.SECRET_KEY || ''
-            ).toString(Crypto.enc.Utf8) === password
+          const passwordMatch = checkMatchPassword(user.password, password)
 
           if (!passwordMatch) {
             return null
           }
 
-          return user
+          return {
+            ...user,
+            name: user.name,
+            email: user.username,
+          }
         } catch (e) {
           console.log(e)
         }

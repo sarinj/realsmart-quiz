@@ -9,6 +9,7 @@ import { Button } from './ui/button'
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Label } from './ui/label'
 
 interface SignInFormProps {
   onRegister: () => void
@@ -109,13 +110,26 @@ export default function SignInForm({ onRegister }: SignInFormProps) {
         <Button type='submit' className='mt-8 w-full' isLoading={loading}>
           Sign In
         </Button>
-        <div></div>
-        <p className='mt-2 text-[14px] text-gray'>
+        <div className='text-gray-2 mt-3 flex items-center justify-between text-xs'>
+          <Label className='flex items-center gap-1 text-xs'>
+            <Input className='size-4' type='checkbox' />
+            <p>Remember me</p>
+          </Label>
+          <p>Need help?</p>
+        </div>
+        <p className='mt-5 text-[14px] text-gray'>
           New to Netflix ?{' '}
           <span className='cursor-pointer text-white' onClick={onRegister}>
             Sign up now
           </span>
           .
+        </p>
+        <p className='mt-2 text-xs text-gray'>
+          This page is protect by Google reCAPTCHA to ensure you&#39;re not a
+          bot.{' '}
+          <span className='cursor-pointer text-blue hover:underline'>
+            Learn more.
+          </span>
         </p>
       </form>
     </Form>
