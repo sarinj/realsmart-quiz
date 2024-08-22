@@ -39,6 +39,7 @@ const config = {
         gray: {
           DEFAULT: '#7c8484',
           1: '#323232',
+          2: '#9e9e9e',
         },
         red: {
           DEFAULT: '#d22d23',
